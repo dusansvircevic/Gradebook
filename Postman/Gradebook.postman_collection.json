@@ -1,0 +1,627 @@
+{
+	"info": {
+		"_postman_id": "eff3b7e1-239f-4fd7-a237-31e34c822ed6",
+		"name": "Gradebook",
+		"description": "Gradebook api testing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Register",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "20e261c8-0527-4278-90ff-56ab0640a3d1",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"firstName\": \"{{$randomFirstName}}\",\r\n    \"lastName\": \"{{$randomFirstName}}\",\r\n    \"email\": \"{{$randomEmail}}\",\r\n    \"password\": \"Testmaster1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/register",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sign in",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "58c5ff2f-87f7-4c9b-8be3-649698212034",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"\r",
+							"pm.environment.set(\"userId\", jsonData.user.id);\r",
+							"pm.environment.set(\"userToken\", jsonData.token);\r",
+							"\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"dusan.svircevic@hotmail.com\",\r\n    \"password\": \"Testmaster1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/login",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Professor",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e67015f0-f389-4f06-8b2e-6f8d0120bc0f",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody)\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{userToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"url\": [\r\n        \"https://img.freepik.com/free-photo/senior-male-professor-standing-against-green-chalkboard_23-2148200952.jpg?size=626&ext=jpg\"\r\n    ],\r\n    \"firstName\": \"{{$randomFirstName}}\",\r\n    \"lastName\": \"{{$randomLastName}}\",\r\n    \"diary_id\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/professors",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"professors"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Gradebooks",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a774d33e-818e-4684-859f-5cbbb3d0e456",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"\r",
+							"pm.test(\"Check the length of the target\", function () {\r",
+							"    pm.expect(jsonData.data).to.have.lengthOf(10);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{userToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/diaries?Page=1",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"diaries"
+					],
+					"query": [
+						{
+							"key": "Page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Gradebooks pagination",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5c3c3a75-2491-4467-96b6-64d72609294a",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"\r",
+							"pm.test(\"Check the length of the target\", function () {\r",
+							"    pm.expect(jsonData.data).to.have.lengthOf(10);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{userToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/search?search_term=&page=2",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"search"
+					],
+					"query": [
+						{
+							"key": "search_term",
+							"value": ""
+						},
+						{
+							"key": "page",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Gradebook",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7b189f09-80de-4254-be80-1adde410d504",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"\r",
+							"\r",
+							"pm.environment.set(\"gradebookId\", jsonData.id);\r",
+							"\r",
+							"pm.test(\"Title is ok\", function () {\r",
+							"  pm.expect(jsonData.title).to.include(\"Chemistry\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"New Gradebook created\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{userToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"Chemistry {{$timestamp}}\",\r\n    \"professor_id\": 1289\r\n}"
+				},
+				"url": {
+					"raw": "{{url}}/diaries",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"diaries"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit Gradebook",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5ec18e10-df47-4e49-a8d3-eb0ce5b24f64",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"\r",
+							"pm.test(\"Title is ok\", function () {\r",
+							"  pm.expect(jsonData.title).to.include(\"novi\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{userToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": {{gradebookId}},\r\n    \"title\": \"Graficka skola novi {{$randomCity}}\",\r\n    \"professor_id\": 1289,\r\n    \"created_at\": \"2020-08-16 10:17:55\",\r\n    \"updated_at\": \"2020-08-16 10:17:55\",\r\n    \"professor\": {\r\n        \"id\": 1289,\r\n        \"user_id\": 1289,\r\n        \"url\": null,\r\n        \"created_at\": \"2020-08-16 10:14:12\",\r\n        \"updated_at\": \"2020-08-16 10:14:12\",\r\n        \"user\": {\r\n            \"id\": 1289,\r\n            \"firstName\": \"Dusan\",\r\n            \"lastName\": \"Svircevic\",\r\n            \"email\": \"dusan.svircevic@hotmail.com\",\r\n            \"email_verified_at\": \"2020-08-16 10:14:12\",\r\n            \"termsAndConditions\": null,\r\n            \"created_at\": \"2020-08-16 10:14:12\",\r\n            \"updated_at\": \"2020-08-16 10:14:12\"\r\n        }\r\n    },\r\n    \"students\": [\r\n        {\r\n            \"id\": 492,\r\n            \"firstName\": \"Jelena\",\r\n            \"lastName\": \"Vojnovic\",\r\n            \"diary_id\": 979,\r\n            \"created_at\": \"2020-08-16 10:18:37\",\r\n            \"updated_at\": \"2020-08-16 10:18:37\"\r\n        },\r\n        {\r\n            \"id\": 493,\r\n            \"firstName\": \"Mladen\",\r\n            \"lastName\": \"Sagunovic\",\r\n            \"diary_id\": 979,\r\n            \"created_at\": \"2020-08-16 10:18:46\",\r\n            \"updated_at\": \"2020-08-16 10:18:46\"\r\n        }\r\n    ],\r\n    \"comments\": [\r\n        {\r\n            \"id\": 634,\r\n            \"text\": \"Main Gradebook\",\r\n            \"diary_id\": 979,\r\n            \"user_id\": 1289,\r\n            \"created_at\": \"2020-08-16 10:18:13\",\r\n            \"updated_at\": \"2020-08-16 10:18:13\",\r\n            \"user\": {\r\n                \"id\": 1289,\r\n                \"firstName\": \"Dusan\",\r\n                \"lastName\": \"Svircevic\",\r\n                \"email\": \"dusan.svircevic@hotmail.com\",\r\n                \"email_verified_at\": \"2020-08-16 10:14:12\",\r\n                \"termsAndConditions\": null,\r\n                \"created_at\": \"2020-08-16 10:14:12\",\r\n                \"updated_at\": \"2020-08-16 10:14:12\"\r\n            }\r\n        }\r\n    ]\r\n}"
+				},
+				"url": {
+					"raw": "{{url}}/diaries/{{gradebookId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"diaries",
+						"{{gradebookId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Student to Gradebook",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "81177d27-bd08-4aaa-8c5f-e4af868fdba3",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{userToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"firstName\": \"{{$randomFirstName}}\",\r\n    \"lastName\": \"{{$randomLastName}}\",\r\n    \"url\": []\r\n}"
+				},
+				"url": {
+					"raw": "{{url}}/diaries/{{gradebookId}}/students",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"diaries",
+						"{{gradebookId}}",
+						"students"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create comment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9a4d9d52-a6b0-4506-8edd-3461a9f436a1",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"\r",
+							"pm.environment.set(\"commentId\", jsonData.id);\r",
+							"\r",
+							"var gradebookID = pm.environment.get(\"gradebookId\");\r",
+							"\r",
+							"tests[\"Comment is in the right Gradebook\"] = jsonData.diary_id == gradebookID;\r",
+							"\r",
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{userToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"text\": \"tekst\",\r\n    \"user_id\": 1289\r\n}"
+				},
+				"url": {
+					"raw": "{{url}}/diaries/{{gradebookId}}/comments",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"diaries",
+						"{{gradebookId}}",
+						"comments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete comment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "95963fe5-e07b-4aad-a45e-e6fe7d4724e6",
+						"exec": [
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{userToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url}}/comments/{{commentId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"comments",
+						"{{commentId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Gradebook",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d13ff9f3-e332-4c8d-b149-ce0472d46419",
+						"exec": [
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{userToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url}}/diaries/{{gradebookId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"diaries",
+						"{{gradebookId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

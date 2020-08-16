@@ -1,0 +1,15 @@
+{
+  "name": "gradebook",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Dusan Svircevic",
+  "license": "ISC",
+  "dependencies": {
+    "cypress": "^4.12.1",
+    "faker": "^4.1.0"
+  }
+}
